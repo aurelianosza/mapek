@@ -1,0 +1,118 @@
+import path
+import sys
+
+folder = path.Path(__file__).abspath()
+sys.path.append(folder.parent.parent.parent)
+
+from interfaces.subject import Subject 
+from multiprocessing import Process, Value, Lock
+from ctypes import c_void_p
+from time import sleep
+
+class Sensor(Subject):
+
+    def __init__(self, name, strategy):
+        Subject.__init__(self)
+
+        self.name = name
+        self._strategy = strategy
+
+        self._value = Value(c_void_p, None)
+        self._mutex = Lock()
+
+    @property
+    def strategy(self):
+        return self._strategy
+
+    @property
+    def value(self):
+        with self._mutex:
+            return self._value.value
+
+    def execute(self):
+        with self._mutex:
+            self._value.value = self.strategy.execute()
+        self.notify()
+
+    def start(self):
+        pass
+
+class IntervalSensor(Sensor):
+
+    def __init__(self, name, strategy, interval):
+        Sensor.__init__(self, name, strategy)
+
+        self._interval = interval
+        self._process = None
+
+    def start(self):
+        self._process = Process(target=self.execute)
+        self._process.start()
+
+    def join(self):
+        self._process.join()
+
+    def execute(self):
+        while True:
+            sleep(self._interval)
+            super(IntervalSensor, self).execute()
+
+
+if __name__ == '__main__':
+
+    from interfaces.strategy import Strategy
+    from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
+    from interfaces.observer import Observer
+
+    class TemperaturaStrategy(Strategy):
+
+        def __init__(self, addr):
+            super(TemperaturaStrategy, self).__init__()
+            self._addr = addr
+
+        def execute(self):
+            sock = socket(AF_INET, SOCK_STREAM)
+            sock.connect(self._addr)
+            data = sock.recv(1024)
+            sock.close()
+            return int(data.decode())
+
+
+    class BasicInterface(Observer):
+
+        def __init__(self):
+            super(BasicInterface, self).__init__()
+
+        def update(self, subject):
+            print("{} send a new value :\t {}".format(subject.name, subject.value))
+
+    b = BasicInterface()
+
+    s = IntervalSensor('aux', TemperaturaStrategy(('127.0.0.1', 7666)), 10)
+
+    s.attach(b)
+
+    s.start()
+    s.join()
+
+        
+
+    
+
+
+
+        
+
+
+
+
+    
+
+    
+
+
+
+
+
+    
+
