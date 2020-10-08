@@ -37,32 +37,13 @@ class Sensor(Subject):
     def start(self):
         pass
 
-class IntervalSensor(Sensor):
-
-    def __init__(self, name, strategy, interval):
-        Sensor.__init__(self, name, strategy)
-
-        self._interval = interval
-        self._process = None
-
-    def start(self):
-        self._process = Process(target=self.execute)
-        self._process.start()
-
-    def join(self):
-        self._process.join()
-
-    def execute(self):
-        while True:
-            sleep(self._interval)
-            super(IntervalSensor, self).execute()
-
 
 if __name__ == '__main__':
 
     from interfaces.strategy import Strategy
     from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
     from interfaces.observer import Observer
+    from interval_sensor import IntervalSensor
 
     class TemperaturaStrategy(Strategy):
 
