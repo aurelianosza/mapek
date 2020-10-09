@@ -44,6 +44,7 @@ if __name__ == '__main__':
     from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
     from interfaces.observer import Observer
     from interval_sensor import IntervalSensor
+    from passive_sensor import PassiveSensor
 
     class TemperaturaStrategy(Strategy):
 
@@ -58,6 +59,16 @@ if __name__ == '__main__':
             sock.close()
             return int(data.decode())
 
+    class PressaoStrategy(Strategy):
+    
+        def __init__(self, addr):
+            self._sock = socket(AF_INET, SOCK_STREAM)
+            self._sock.connect(addr)
+
+        def execute(self):
+            value = self._sock.recv(1024)
+            return int(value.decode())
+
 
     class BasicInterface(Observer):
 
@@ -69,12 +80,17 @@ if __name__ == '__main__':
 
     b = BasicInterface()
 
-    s = IntervalSensor('aux', TemperaturaStrategy(('127.0.0.1', 7666)), 10)
+    s1 = IntervalSensor('Temperatura', TemperaturaStrategy(('127.0.0.1', 8666)), 20)
+    s2 = PassiveSensor('Pressao', PressaoStrategy(('127.0.0.1', 7555)))
 
-    s.attach(b)
+    s1.attach(b)
+    s2.attach(b)
 
-    s.start()
-    s.join()
+    s1.start()
+    s2.start()
+
+    s2.join()
+    s1.join()
 
         
 
