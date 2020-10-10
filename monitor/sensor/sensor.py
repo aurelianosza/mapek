@@ -45,6 +45,7 @@ if __name__ == '__main__':
     from interfaces.observer import Observer
     from interval_sensor import IntervalSensor
     from passive_sensor import PassiveSensor
+    from random import randint
 
     class TemperaturaStrategy(Strategy):
 
@@ -53,6 +54,7 @@ if __name__ == '__main__':
             self._addr = addr
 
         def execute(self):
+            return randint(1, 99)
             sock = socket(AF_INET, SOCK_STREAM)
             sock.connect(self._addr)
             data = sock.recv(1024)
@@ -66,6 +68,8 @@ if __name__ == '__main__':
             self._sock.connect(addr)
 
         def execute(self):
+            sleep(randint(1, 200))
+            return randint(1, 60)
             value = self._sock.recv(1024)
             return int(value.decode())
 
