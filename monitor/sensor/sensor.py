@@ -65,7 +65,7 @@ if __name__ == '__main__':
     
         def __init__(self, addr):
             self._sock = socket(AF_INET, SOCK_STREAM)
-            self._sock.connect(addr)
+            # self._sock.connect(addr)
 
         def execute(self):
             sleep(randint(1, 200))
