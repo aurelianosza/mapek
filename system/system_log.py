@@ -4,17 +4,15 @@ import sys
 folder = path.Path(__file__).abspath()
 sys.path.append(folder.parent.parent)
 
-from interfaces.observer import Observer
-
-class SystemLog(Observer):
+class SystemLog(object):
 
     def __init__(self):
         Observer.__init__(self)
         self._recorders = {}
 
-    def update(self, subject):
+    def push(self, info):
         for key, value in self._recorders.items():
-            value.execute(subject)
+            value.execute(info)
 
     def add_recorder(self, name, recorder):
         self._recorders[name] = recorder
