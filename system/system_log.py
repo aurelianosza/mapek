@@ -7,10 +7,9 @@ sys.path.append(folder.parent.parent)
 class SystemLog(object):
 
     def __init__(self):
-        Observer.__init__(self)
         self._recorders = {}
 
-    def push(self, info):
+    def write(self, info):
         for key, value in self._recorders.items():
             value.execute(info)
 
@@ -40,11 +39,12 @@ if __name__ == '__main__':
             with open('log.txt', 'a') as file:
                 file.write("{} Receive {} value\n".format(datetime.now(), subject.value))
 
-    class SimpleSubject(Subject):
+    class SimpleSubject(object):
 
         def __init__(self):
             Subject.__init__(self)
             self._value = 0
+            self.log = None
 
         @property
         def value(self):
@@ -53,7 +53,7 @@ if __name__ == '__main__':
         @value.setter
         def value(self, value):
             self._value = value
-            self.notify()
+            self.log.write(self)
 
     log = SystemLog()
 
@@ -62,7 +62,7 @@ if __name__ == '__main__':
 
     subject = SimpleSubject()
 
-    subject.attach(log)
+    subject.log = log
 
     for i in range(99):
         subject.value = i

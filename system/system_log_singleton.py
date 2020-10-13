@@ -9,13 +9,13 @@ class SystemLogSingleton(object):
 
     def get_instance(self):
             
-        if type(self)._system_state is None:
+        if type(self)._system_log is None:
 
             BaseManager.register('SystemLog', SystemLog)
             manager = BaseManager()
             manager.start()
 
-            type(self)._system_state = manager.SystemLog()
+            type(self)._system_log = manager.SystemLog()
 
         with type(self)._mutex:
             return type(self)._system_log
