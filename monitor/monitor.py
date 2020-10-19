@@ -2,7 +2,7 @@ import path
 import sys
 
 folder = path.Path(__file__).abspath()
-sys.path.append(folder.parent.parent.parent)
+sys.path.append(folder.parent.parent)
 
 from interfaces.observer import Observer
 from interfaces.subject import Subject
@@ -15,8 +15,11 @@ class Monitor(Observer, Subject):
         Observer.__init__(self)
         Subject.__init__(self)
 
-        self._system_log = SystemLog.get_instance()
-        self._system_state = SystemState.get_instance()
+        log = SystemLog()
+        state = SystemState()
+
+        self._system_log = log.get_instance()
+        self._system_state = state.get_instance()
         self._sensors = {}
 
     def add_sensor(self, sensor):
