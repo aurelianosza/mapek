@@ -1,4 +1,10 @@
-from sensor import Sensor
+import path
+import sys
+
+folder = path.Path(__file__).abspath()
+sys.path.append(folder.parent.parent)
+
+from monitor.sensor.sensor import Sensor
 from multiprocessing import Process
 from time import sleep
 

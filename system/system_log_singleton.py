@@ -1,4 +1,10 @@
-from system_log import SystemLog
+import path
+import sys
+
+folder = path.Path(__file__).abspath()
+sys.path.append(folder.parent.parent)
+
+from system.system_log import SystemLog
 from multiprocessing import Value, Lock
 from multiprocessing.managers import BaseManager
 

@@ -8,7 +8,7 @@ from interfaces.subject import Subject
 from multiprocessing import Process, Value, Lock
 from ctypes import c_void_p
 from time import sleep
-
+from system.system_log_singleton import SystemLogSingleton as SystemLog
 class Sensor(Subject):
 
     def __init__(self, name, strategy):
@@ -19,6 +19,8 @@ class Sensor(Subject):
 
         self._value = Value(c_void_p, None)
         self._mutex = Lock()
+
+        self._log = SystemLog().get_instance()  
 
     @property
     def strategy(self):
