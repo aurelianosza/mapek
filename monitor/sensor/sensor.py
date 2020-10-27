@@ -8,7 +8,6 @@ from interfaces.subject import Subject
 from multiprocessing import Process, Value, Lock
 from ctypes import c_void_p
 from time import sleep
-from exceptions.read_value_exception import ReadValueException
 from system.system_log_singleton import SystemLogSingleton as SystemLog
 class Sensor(Subject):
 
@@ -33,14 +32,9 @@ class Sensor(Subject):
             return self._value.value
 
     def execute(self):
-        try:
-            with self._mutex:
-                self._value.value = self.strategy.execute()
-            self.notify()
-        except ReadValueException as e:
-            self._log.write("Erro na leitura, leu {} de {}".format(e.value, self.name))
-        finally:
-            pass
+        with self._mutex:
+            self._value.value = self.strategy.execute()
+        self.notify()
 
     def start(self):
         pass
