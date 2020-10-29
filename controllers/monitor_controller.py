@@ -15,6 +15,7 @@ from monitor.treshold.treshold import Treshold
 from datetime import datetime
 from system.system_log_singleton import SystemLogSingleton as SystemLog
 from monitor.data_interceptor import DataInterceptor
+from multiprocessing.managers import BaseManager
 class SocketStrategy(Strategy):
 
     def __init__(self, addr):
@@ -28,16 +29,6 @@ class SocketStrategy(Strategy):
         data = sock.recv(1024)
         sock.close()
         return int(data.decode())
-
-class FileStrategy(Strategy):
-    
-    def __init__(self):
-        Strategy.__init__(self)
-
-    def execute(self, message):
-        with open('log.txt', 'a') as file:
-            file.write("{} Receive {} value\n".format(datetime.now(), message))
-
 
 class MonitorController(object):
 
@@ -70,9 +61,8 @@ if __name__ == '__main__':
 
     s = SystemLog().get_instance()
 
-    s.add_recorder('file', FileStrategy())
+    s.write('im here')
 
-    
     controller = MonitorController()
     controller.start()
 
