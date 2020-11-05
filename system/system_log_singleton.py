@@ -23,5 +23,4 @@ class SystemLogSingleton(object):
 
             type(self)._system_log = manager.SystemLog()
 
-        with type(self)._mutex:
-            return type(self)._system_log
+        return type(self)._system_log
