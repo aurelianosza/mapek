@@ -23,7 +23,7 @@ class SocketStrategy(Strategy):
         self._addr = addr
 
     def execute(self):
-        return randint(-20, 240)
+        return randint(20, 240)
         sock = socket(AF_INET, SOCK_STREAM)
         sock.connect(self._addr)
         data = sock.recv(1024)
