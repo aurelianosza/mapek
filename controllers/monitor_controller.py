@@ -51,7 +51,7 @@ class MonitorController(object):
         self.monitor.add_interceptor('temperatura', dataInterceptorTemperatura)
 
         sensorPressao.start()
-        sleep(5)
+
         sensorTemperatura.start()
 
         sensorPressao.join()
