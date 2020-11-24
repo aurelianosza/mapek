@@ -16,9 +16,10 @@ from datetime import datetime
 from system.system_log_singleton import SystemLogSingleton as SystemLog
 from monitor.data_interceptor import DataInterceptor
 from multiprocessing.managers import BaseManager
+from controllers.base_controller import BaseController
 class SocketStrategy(Strategy):
 
-    def __init__(self, addr):
+    def __init__(self, addr, port):
         Strategy.__init__(self)
         self._addr = addr
 
@@ -30,38 +31,41 @@ class SocketStrategy(Strategy):
         sock.close()
         return int(data.decode())
 
-class MonitorController(object):
+class MonitorController(BaseController):
 
     def __init__(self):
         self.monitor = Monitor()
 
 
     def start(self):
+        self._sensors = {
+            "socket" : SocketStrategy
+        }
 
-        sensorPressao = interval_sensor.IntervalSensor('Pressao', SocketStrategy(('127.0.0.1', 7666)), 10)
-        sensorTemperatura = interval_sensor.IntervalSensor('Temperatura', SocketStrategy(('127.0.0.1', 8666)), 10)
+        data = [
+            {
+                "sensor": 'socket:127.0.0.1,7666',
+                "limits": '0,160',
+                "interval": 30,
+                "property": 'pressao'
+            },
+            {
+                "sensor": 'socket:127.0.0.1,8666',
+                "limits": '0,160',
+                "interval": 30,
+                "property": 'temperatura'
+            },
+        ]
 
-        dataInterceptorPressao = DataInterceptor(0, 160)
-        dataInterceptorTemperatura = DataInterceptor(0, 160)
+        self._load_sensors(self.monitor, data)
 
-        sensorPressao.attach(dataInterceptorPressao)
-        sensorTemperatura.attach(dataInterceptorTemperatura)
+        while True:
+            pass
 
-        self.monitor.add_interceptor('pressao', dataInterceptorPressao)
-        self.monitor.add_interceptor('temperatura', dataInterceptorTemperatura)
-
-        sensorPressao.start()
-
-        sensorTemperatura.start()
-
-        sensorPressao.join()
-        sensorTemperatura.join()
 
 if __name__ == '__main__':
 
     s = SystemLog().get_instance()
-
-    s.write('im here')
 
     controller = MonitorController()
     controller.start()
