@@ -17,7 +17,7 @@ class KnowedgeReaderStrategy(Strategy):
         with open('data.json', 'r') as f:
             aux = json.loads(f.read())
             if data in aux:
-                return aux[data]
+                return {data: aux[data]}
             return None
 
 if __name__ == '__main__':
