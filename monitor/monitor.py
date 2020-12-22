@@ -7,6 +7,7 @@ sys.path.append(folder.parent.parent)
 from interfaces.subject import Subject
 from system.system_log_singleton import SystemLogSingleton as SystemLog
 from system.system_state_singleton import SystemStateSingleton as SystemState
+from system.knowedge_singleton import KnowedgeSingleton as Knowedge
 from multiprocessing.managers import BaseManager
 from system.strategies.zqm_strategy import ZmqStrategy
 from json import dumps
@@ -18,9 +19,11 @@ class Monitor(Subject):
 
         log = SystemLog()
         state = SystemState()
+        knowedge = Knowedge()
 
         self._system_log = log.get_instance()
         self._system_state = state.get_instance()
+        self._knowedge = knowedge.get_instance()
         self._interceptors = {}
 
         BaseManager.register('ZmqStrategy', ZmqStrategy)
@@ -40,6 +43,7 @@ class Monitor(Subject):
         print("Receive value {} from {}.".format(value, property))
         self._system_state.set_property(property, value)
         self._publisher.execute(dumps({property:value}))
+        self._knowedge.create({property:value})
         self.notify()
 
 
