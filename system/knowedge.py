@@ -6,14 +6,14 @@ sys.path.append(folder.parent.parent)
 
 class Knowedge(object):
 
-    def __init__(self):
-        self.creator = None
-        self.reader = None
-        self.updater = None
-        self.deletor = None
+    def __init__(self, creator, reader, updater, deletor):
+        self.creator = creator
+        self.reader = reader
+        self.updater = updater
+        self.deletor = deletor
 
     def create(self, data):
-        if self.create is None:
+        if self.creator is None:
             return
         self.creator.execute(data)
 
