@@ -17,9 +17,9 @@ class Analyser(Observer):
 
 
     def create_symptom(self, name, symptom, data):
-        self._symptom_manager.add_symptom(name, symptom, data)
+        self._symptom_manager.add_symptom(symptom, name, data)
 
-    def update(self):
+    def update(self, subject):
         symptoms = self._symptom_manager.verify()
 
         for i in symptoms:

@@ -46,12 +46,3 @@ if __name__ == '__main__':
 
     for i in sm.verify():
         print(i._name)
-
-
-
-    
-
-
-
-    
-

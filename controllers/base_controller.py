@@ -12,6 +12,7 @@ class BaseController(object):
 
     def __init__(self):
         self._sensors = {}
+        self._symptoms = {}
 
 
     """
