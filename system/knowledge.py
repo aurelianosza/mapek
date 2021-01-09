@@ -4,13 +4,18 @@ import sys
 folder = path.Path(__file__).abspath()
 sys.path.append(folder.parent.parent)
 
-class Knowedge(object):
+from interfaces.observer import Observer
+
+class Knowedge(Observer):
 
     def __init__(self, creator, reader, updater, deletor):
         self.creator = creator
         self.reader = reader
         self.updater = updater
         self.deletor = deletor
+
+    def update(self, subject):
+        
 
     def create(self, data):
         if self.creator is None:
