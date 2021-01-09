@@ -5,10 +5,23 @@ class SystemState(object):
     def __init__(self):
         self._properties = {}
 
-    def set_property(self, key, value):
-        self._properties[key] = {'value': value, 'updated_at' : datetime.now()}
+    @property
+    def properties(self):
+        return self._properties
 
-    def get_property(self, key):
-        if not key in self._properties:
-            return None
-        return self._properties[key]
+    @properties.setter
+    def properties(self, properties):
+        for key in properties.keys():
+            self._properties[key] = {'value': properties[key], 'updated_at' : datetime.now()}
+
+
+
+
+if __name__ == '__main__':
+    
+    s = SystemState()
+
+    s.properties = {'temperatura': 10, 'presao' : 20}
+
+    print(s.properties)
+    
