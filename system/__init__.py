@@ -14,6 +14,6 @@ manager.start()
 
 s = SystemLogSingleton().get_instance()
 
-m = manager.MysqlStrategy()
+# m = manager.MysqlStrategy()
 
-s.add_recorder('database', m)
+# s.add_recorder('database', m)

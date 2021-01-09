@@ -52,6 +52,13 @@ class LimitSymptom(Symptom):
         aux = self.system_state.get_property(self.property)
         return aux and int(aux['value']) > int(self.limit)
 
+class PlanListener(object):
+    
+    def listen(self, data):
+
+        for symptom in data.symptoms:
+            print(symptom._name)
+
 
 
 class MonitorController(BaseController):
@@ -70,17 +77,19 @@ class MonitorController(BaseController):
         self.analyzer.create_symptom('limit_temperatura', LimitSymptom, {'limit': 50, 'property': 'temperatura'})
         self.analyzer.create_symptom('limit_pressao', LimitSymptom, {'limit': 75, 'property': 'pressao'})
 
+        self.analyzer.add_listener('plan', PlanListener())
+
         data = [
             {
                 "sensor": 'socket:127.0.0.1,7666',
                 "limits": '0,160',
-                "interval": 30,
+                "interval": 5,
                 "property": 'pressao'
             },
             {
                 "sensor": 'socket:127.0.0.1,8666',
                 "limits": '0,160',
-                "interval": 30,
+                "interval": 5,
                 "property": 'temperatura'
             },
         ]
