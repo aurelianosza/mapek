@@ -4,9 +4,9 @@ import sys
 folder = path.Path(__file__).abspath()
 sys.path.append(folder.parent.parent)
 
-from interfaces.observer import Observer
+from interfaces.listener import Listener
 
-class Knowedge(Observer):
+class Knowledge(Listener):
 
     def __init__(self, creator, reader, updater, deletor):
         self.creator = creator
@@ -14,9 +14,9 @@ class Knowedge(Observer):
         self.updater = updater
         self.deletor = deletor
 
-    def update(self, subject):
+    def listen(self, data):
+        print(data)
         
-
     def create(self, data):
         if self.creator is None:
             return
@@ -40,15 +40,12 @@ class Knowedge(Observer):
 
 if __name__ == '__main__':
     
-    from system.strategies.knowedge_creator_strategy import KnowedgeCreatorStrategy
-    from system.strategies.knowedge_deletor_strategy import KnowedgeDeletorStrategy
-    from system.strategies.knowedge_reader_strategy import KnowedgeReaderStrategy
+    from system.strategies.knowledge_creator_strategy import KnowledgeCreatorStrategy
+    from system.strategies.knowledge_reader_strategy import KnowledgeReaderStrategy
+    from system.strategies.knowledge_updater_strategy import KnowledgeUpdaterStrategy
+    from system.strategies.knowledge_deletor_strategy import KnowledgeDeletorStrategy
 
-    k = Knowedge()
-
-    k.creator = KnowedgeCreatorStrategy()
-    k.deletor = KnowedgeDeletorStrategy()
-    k.reader = KnowedgeReaderStrategy()
+    k = Knowledge(KnowledgeCreatorStrategy(), KnowledgeReaderStrategy(), KnowledgeUpdaterStrategy(), KnowledgeDeletorStrategy())
 
     k.create({"flow": 'podcast'})
     print('{}'.format(k.read('flow')))

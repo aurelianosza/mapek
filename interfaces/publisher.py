@@ -1,5 +1,5 @@
 
-class Publicher(object):
+class Publisher(object):
 
     def __init__(self):
         #var array
@@ -28,9 +28,14 @@ if __name__ == '__main__':
             print("listen {} form other simple listener".format(data))
 
     p = Publisher()
+    p2 = Publisher()
     
     p.add_listener(SimpleListener())
     p.add_listener(OtherSimpleListener())
 
-    p.publish('this value')
+    p2.add_listener(SimpleListener())
+    p2.add_listener(OtherSimpleListener())
+
+    p.publish('p1 value')
     
+    p2.publish('p2 value')
