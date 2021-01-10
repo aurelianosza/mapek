@@ -15,7 +15,7 @@ class Knowledge(Listener):
         self.deletor = deletor
 
     def listen(self, data):
-        print(data)
+        self.create(data)
         
     def create(self, data):
         if self.creator is None:
@@ -44,12 +44,30 @@ if __name__ == '__main__':
     from system.strategies.knowledge_reader_strategy import KnowledgeReaderStrategy
     from system.strategies.knowledge_updater_strategy import KnowledgeUpdaterStrategy
     from system.strategies.knowledge_deletor_strategy import KnowledgeDeletorStrategy
+    from interfaces.publisher import Publisher
+
+    class SomePublisher(Publisher):
+
+        def __init__(self):
+            Publisher.__init__(self)
+            self.data = 0
+
+        @property
+        def data(self):
+            return self._data
+
+        @data.setter
+        def data(self, data):
+            self._data = data
+            self.publish(self.data)
+
 
     k = Knowledge(KnowledgeCreatorStrategy(), KnowledgeReaderStrategy(), KnowledgeUpdaterStrategy(), KnowledgeDeletorStrategy())
 
-    k.create({"flow": 'podcast'})
-    print('{}'.format(k.read('flow')))
-    k.delete('flow')
+    s = SomePublisher()
+
+    s.add_listener(k)
+    s.data = {'pressao': 200}
 
     
      
