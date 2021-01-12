@@ -2,14 +2,21 @@ import path
 import sys
 
 folder = path.Path(__file__).abspath()
-sys.path.append(folder.parent.parent.parent)
+sys.path.append(folder.parent.parent)
+
+from system.knowledge_singleton import KnowledgeSingleton
+from multiprocessing import Manager
 
 class SymptomManager(object):
 
     def __init__(self):
         self._symptoms = {}
 
-        self._symptoms_base = {}
+        knowledge_accessor = KnowledgeSingleton()
+
+        self._knowledge = knowledge_accessor.get_instance()
+        manager = Manager()
+        self._symptoms = manager.dict()
 
     def verify(self):
 
@@ -25,7 +32,6 @@ if __name__ == '__main__':
 
     from random import randint
     from symptom import Symptom
-
     class SimpleSymptom(Symptom):
 
         def __init__(self, name, manager, data):

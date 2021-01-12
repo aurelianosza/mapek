@@ -7,12 +7,19 @@ sys.path.append(folder.parent.parent)
 from monitor.data_interceptor import DataInterceptor
 from monitor.sensor.interval_sensor import IntervalSensor
 from monitor.sensor.passive_sensor import PassiveSensor
+from multiprocessing.managers import BaseManager
+
+from system.strategies.zqm_strategy import ZmqStrategy
 
 class BaseController(object):
 
     def __init__(self):
         self._sensors = {}
         self._symptoms = {}
+
+        BaseManager.register('ZmqStrategy', ZmqStrategy)
+        self.manager = BaseManager()
+        self.manager.start()
 
 
     """

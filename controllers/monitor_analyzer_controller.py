@@ -13,13 +13,13 @@ from random import randint
 from exceptions.read_value_exception import ReadValueException
 from monitor.treshold.treshold import Treshold
 from datetime import datetime
-from system.system_log_singleton import SystemLogSingleton as SystemLog
 from monitor.data_interceptor import DataInterceptor
 from multiprocessing.managers import BaseManager
 from controllers.base_controller import BaseController
 from analyzer.analyzer import Analyser
 from analyzer.symptom import Symptom
-from system.system_state_singleton import SystemStateSingleton as SystemState
+from system.knowledge_singleton import KnowledgeSingleton
+from system.strategies.zqm_strategy import ZmqStrategy
 
 class SocketStrategy(Strategy):
 
@@ -44,13 +44,9 @@ class LimitSymptom(Symptom):
         self.limit =  data['limit']
         self.property = data['property']
 
-        state = SystemState()
-
-        self.system_state = state.get_instance()
-
     def handle(self):
-        aux = self.system_state.get_property(self.property)
-        return aux and int(aux['value']) > int(self.limit)
+        aux = self._manager._knowledge.read(self.property)
+        return aux and int(aux[self.property]) > int(self.limit)
 
 class PlanListener(object):
     
@@ -61,23 +57,28 @@ class PlanListener(object):
 
 
 
-class MonitorController(BaseController):
+class MonitorAnalyzerController(BaseController):
 
     def __init__(self):
+        BaseController.__init__(self)
         self.monitor = Monitor()
         self.analyzer = Analyser()
+        
+        knowledge_accessor = KnowledgeSingleton()
+        self.knowledge = knowledge_accessor.get_instance()
+        self.external_publisher = self.manager.ZmqStrategy()
+
+        self.monitor.add_listener(self.knowledge)
+        self.monitor.add_listener(self.external_publisher)
 
         self.monitor.attach(self.analyzer)
+
+        self.analyzer.add_listener(PlanListener())
 
     def start(self):
         self._sensors = {
             "socket" : SocketStrategy
         }
-
-        self.analyzer.create_symptom('limit_temperatura', LimitSymptom, {'limit': 50, 'property': 'temperatura'})
-        self.analyzer.create_symptom('limit_pressao', LimitSymptom, {'limit': 75, 'property': 'pressao'})
-
-        self.analyzer.add_listener('plan', PlanListener())
 
         data = [
             {
@@ -96,15 +97,16 @@ class MonitorController(BaseController):
 
         self._load_sensors(self.monitor, data)
 
+        self.analyzer.add_symptom('pressao_symptom', LimitSymptom, {'limit': 55, 'property': 'pressao'})
+        self.analyzer.add_symptom('temperatura_symptom', LimitSymptom, {'limit': 85, 'property': 'temperatura'})
+
         while True:
             pass
 
 
 if __name__ == '__main__':
 
-    s = SystemLog().get_instance()
-
-    controller = MonitorController()
+    controller = MonitorAnalyzerController()
     controller.start()
 
 

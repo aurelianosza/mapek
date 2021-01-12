@@ -4,13 +4,13 @@ import sys
 folder = path.Path(__file__).abspath()
 sys.path.append(folder.parent.parent)
 
-from system.knowedge import Knowledge
+from system.knowledge import Knowledge
 from multiprocessing import Value, Lock
 from multiprocessing.managers import BaseManager
-from system.strategies.knowedge_creator_strategy import KnowedgeCreatorStrategy
-from system.strategies.knowedge_deletor_strategy import KnowedgeDeletorStrategy
-from system.strategies.knowedge_reader_strategy import KnowedgeReaderStrategy
-from system.strategies.knowedge_updater_strategy import KnowedgeUpdaterStrategy
+from system.strategies.knowledge_creator_strategy import KnowledgeCreatorStrategy
+from system.strategies.knowledge_deletor_strategy import KnowledgeDeletorStrategy
+from system.strategies.knowledge_reader_strategy import KnowledgeReaderStrategy
+from system.strategies.knowledge_updater_strategy import KnowledgeUpdaterStrategy
 
 class KnowledgeSingleton(object):
 
@@ -21,11 +21,11 @@ class KnowledgeSingleton(object):
             
         if type(self)._knowledge is None:
 
-            BaseManager.register('Knowedge', Knowedge)
+            BaseManager.register('Knowledge', Knowledge)
             manager = BaseManager()
             manager.start()
 
-            type(self)._knowledge = manager.Knowledge(KnowedgeCreatorStrategy(), KnowedgeReaderStrategy(), KnowedgeUpdaterStrategy(), KnowedgeDeletorStrategy())
+            type(self)._knowledge = manager.Knowledge(KnowledgeCreatorStrategy(), KnowledgeReaderStrategy(), KnowledgeUpdaterStrategy(), KnowledgeDeletorStrategy())
         
         with type(self)._mutex:
             return type(self)._knowledge

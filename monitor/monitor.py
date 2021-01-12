@@ -6,19 +6,15 @@ sys.path.append(folder.parent.parent)
 
 from interfaces.subject import Subject
 from interfaces.publisher import Publisher
-from interfaces.listener import Listener
-from system.system_log_singleton import SystemLogSingleton as SystemLog
-from system.knowedge_singleton import KnowedgeSingleton as Knowedge
 from multiprocessing.managers import BaseManager
 from system.strategies.zqm_strategy import ZmqStrategy
 from json import dumps
 
-class Monitor(Subject, Publisher, Listener):
+class Monitor(Subject, Publisher):
 
     def __init__(self):
         Subject.__init__(self)
         Publisher.__init__(self)
-        Listener.__init__(self)
 
         self._interceptors = {}
 
@@ -31,7 +27,7 @@ class Monitor(Subject, Publisher, Listener):
 
     def listen(self, property, value):
         print("Receive value {} from {}.".format(value, property))
-        self._publisher.execute(dumps({property:value}))
+        self.publish({property:value})
         self.notify()
 
 
