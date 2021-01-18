@@ -66,10 +66,11 @@ class MonitorAnalyzerController(BaseController):
         
         knowledge_accessor = KnowledgeSingleton()
         self.knowledge = knowledge_accessor.get_instance()
-        self.external_publisher = self.manager.ZmqStrategy()
+        
+        external_publisher = self.manager.ZmqStrategy()
 
         self.monitor.add_listener(self.knowledge)
-        self.monitor.add_listener(self.external_publisher)
+        self.monitor.add_listener(external_publisher)
 
         self.monitor.attach(self.analyzer)
 

@@ -25,7 +25,7 @@ class Monitor(Subject, Publisher):
     def remove_interceptor(self, name):
         self._interceptors.pop(name)
 
-    def listen(self, property, value):
+    def recv(self, property, value):
         print("Receive value {} from {}.".format(value, property))
         self.publish({property:value})
         self.notify()

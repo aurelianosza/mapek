@@ -21,7 +21,7 @@ class DataInterceptor(Observer):
     def dispatch(self, property, value):
         if self.monitor is None:
             return
-        self.monitor.listen(property, value)
+        self.monitor.recv(property, value)
 
     def update(self, sensor):
         try:
