@@ -10,7 +10,6 @@ from multiprocessing import Manager
 class Planner(Listener):
     
     def __init__(self):
-
         manager = Manager()
         self._strategies = manager.dict()
 
@@ -23,10 +22,10 @@ class Planner(Listener):
     def __generate_symptoms_name(self, data):
         return '|'.join(sorted(data))
 
-
     def listen(self, adaptation_request):
         symptoms_name = list(map(lambda symptom: symptom._name, adaptation_request.symptoms))
 
-        print(symptoms_name)
-        print(self._strategies[self.__generate_symptoms_name(symptoms_name)])
+        data = self._strategies[self.__generate_symptoms_name(symptoms_name)](adaptation_request).execute()
+
+        print(data)
         

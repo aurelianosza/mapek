@@ -49,13 +49,29 @@ class LimitSymptom(Symptom):
         aux = self._manager._knowledge.read(self.property)
         return aux and int(aux[self.property]) > int(self.limit)
 
-# class PlanListener(object):
+class AllStrategy(Strategy):
+
+    def __init__(self, data):
+        Strategy.__init__(self)
+
+    def execute(self):
+        return {'pressao' : 5, 'temperatura' : 100}
+
+class TemperaturaStrategy(Strategy):
     
-#     def listen(self, data):
+    def __init__(self, data):
+        Strategy.__init__(self)
 
-#         for symptom in data.symptoms:
-#             print(symptom._name)
+    def execute(self):
+        return {'temperatura' : 5}
 
+class PressaoStrategy(Strategy):
+    
+    def __init__(self, data):
+        Strategy.__init__(self)
+
+    def execute(self):
+        return {'pressao' : 5}
 
 
 class MonitorAnalyzerController(BaseController):
@@ -103,9 +119,9 @@ class MonitorAnalyzerController(BaseController):
         self.analyzer.add_symptom('pressao_symptom', LimitSymptom, {'limit': 55, 'property': 'pressao'})
         self.analyzer.add_symptom('temperatura_symptom', LimitSymptom, {'limit': 85, 'property': 'temperatura'})
 
-        self.planner.add_strategy(['pressao_symptom', 'temperatura_symptom'], 'all') 
-        self.planner.add_strategy(['pressao_symptom'], 'just pressao') 
-        self.planner.add_strategy(['temperatura_symptom'], 'just temperatura') 
+        self.planner.add_strategy(['pressao_symptom', 'temperatura_symptom'], AllStrategy) 
+        self.planner.add_strategy(['pressao_symptom'], PressaoStrategy) 
+        self.planner.add_strategy(['temperatura_symptom'], TemperaturaStrategy) 
 
         while True:
             pass
