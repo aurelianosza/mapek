@@ -7,7 +7,7 @@ sys.path.append(folder.parent.parent.parent)
 from interfaces.strategy import Strategy
 import json
 
-class KnowedgeUpdaterStrategy(Strategy):
+class KnowledgeCreatorStrategy(Strategy):
 
     def __init__(self):
         Strategy.__init__(self)
@@ -17,10 +17,14 @@ class KnowedgeUpdaterStrategy(Strategy):
         with open('data.json', 'r') as f:
             aux = json.loads(f.read())
         for key, val in data.items():
-            if key in aux:
-                aux[key] = val
+            aux[key] = val
         with open('data.json', 'w') as f:
             f.write(json.dumps(aux))
 
+if __name__ == '__main__':
+    
+    k = KnowledgeCreatorStrategy()
+
+    k.execute({"name": 'foo', "alias": 'bar'})
     
 
