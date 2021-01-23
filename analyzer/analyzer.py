@@ -21,5 +21,9 @@ class Analyser(Observer, Publisher):
 
     def update(self, subject):
 
-        symptoms = self._symptom_manager.verify()
+        symptoms = list(self._symptom_manager.verify())
+
+        if len(symptoms) == 0:
+            return
+
         self.publish(AdaptationRequest(symptoms))

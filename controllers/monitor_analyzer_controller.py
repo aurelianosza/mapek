@@ -20,6 +20,7 @@ from analyzer.analyzer import Analyser
 from analyzer.symptom import Symptom
 from system.knowledge_singleton import KnowledgeSingleton
 from system.strategies.zqm_strategy import ZmqStrategy
+from plan.planner import Planner
 
 class SocketStrategy(Strategy):
 
@@ -48,12 +49,12 @@ class LimitSymptom(Symptom):
         aux = self._manager._knowledge.read(self.property)
         return aux and int(aux[self.property]) > int(self.limit)
 
-class PlanListener(object):
+# class PlanListener(object):
     
-    def listen(self, data):
+#     def listen(self, data):
 
-        for symptom in data.symptoms:
-            print(symptom._name)
+#         for symptom in data.symptoms:
+#             print(symptom._name)
 
 
 
@@ -63,6 +64,7 @@ class MonitorAnalyzerController(BaseController):
         BaseController.__init__(self)
         self.monitor = Monitor()
         self.analyzer = Analyser()
+        self.planner = Planner()
         
         knowledge_accessor = KnowledgeSingleton()
         self.knowledge = knowledge_accessor.get_instance()
@@ -74,7 +76,7 @@ class MonitorAnalyzerController(BaseController):
 
         self.monitor.attach(self.analyzer)
 
-        self.analyzer.add_listener(PlanListener())
+        self.analyzer.add_listener(self.planner)
 
     def start(self):
         self._sensors = {
@@ -100,6 +102,10 @@ class MonitorAnalyzerController(BaseController):
 
         self.analyzer.add_symptom('pressao_symptom', LimitSymptom, {'limit': 55, 'property': 'pressao'})
         self.analyzer.add_symptom('temperatura_symptom', LimitSymptom, {'limit': 85, 'property': 'temperatura'})
+
+        self.planner.add_strategy(['pressao_symptom', 'temperatura_symptom'], 'all') 
+        self.planner.add_strategy(['pressao_symptom'], 'just pressao') 
+        self.planner.add_strategy(['temperatura_symptom'], 'just temperatura') 
 
         while True:
             pass
