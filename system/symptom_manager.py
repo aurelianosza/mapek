@@ -10,8 +10,6 @@ from multiprocessing import Manager
 class SymptomManager(object):
 
     def __init__(self):
-        self._symptoms = {}
-
         knowledge_accessor = KnowledgeSingleton()
 
         self._knowledge = knowledge_accessor.get_instance()
