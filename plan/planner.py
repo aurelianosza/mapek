@@ -5,11 +5,14 @@ folder = path.Path(__file__).abspath()
 sys.path.append(folder.parent.parent)
 
 from interfaces.listener import Listener
+from interfaces.publisher import Publisher
 from multiprocessing import Manager
 
-class Planner(Listener):
+class Planner(Listener, Publisher):
     
     def __init__(self):
+        Listener.__init__(self)
+        Publisher.__init__(self)
         manager = Manager()
         self._strategies = manager.dict()
 
@@ -27,5 +30,5 @@ class Planner(Listener):
 
         data = self._strategies[self.__generate_symptoms_name(symptoms_name)](adaptation_request).execute()
 
-        print(data)
+        self.publish(data)
         

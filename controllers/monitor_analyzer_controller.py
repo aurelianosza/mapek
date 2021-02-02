@@ -21,6 +21,9 @@ from analyzer.symptom import Symptom
 from system.knowledge_singleton import KnowledgeSingleton
 from system.strategies.zqm_strategy import ZmqStrategy
 from plan.planner import Planner
+from plan.action import Action
+from plan.changes_plan import ChangesPlan
+from interfaces.listener import Listener
 
 class SocketStrategy(Strategy):
 
@@ -55,7 +58,10 @@ class AllStrategy(Strategy):
         Strategy.__init__(self)
 
     def execute(self):
-        return {'pressao' : 5, 'temperatura' : 100}
+        change_plan = ChangesPlan()
+        change_plan.add_action(Action('set_temperatura', {'value': randint(20, 240)}))
+        change_plan.add_action(Action('set_pressao', {'value': randint(20, 240)}))
+        return change_plan
 
 class TemperaturaStrategy(Strategy):
     
@@ -63,7 +69,9 @@ class TemperaturaStrategy(Strategy):
         Strategy.__init__(self)
 
     def execute(self):
-        return {'temperatura' : 5}
+        change_plan = ChangesPlan()
+        change_plan.add_action(Action('set_temperatura', {'value': randint(20, 240)}))
+        return change_plan
 
 class PressaoStrategy(Strategy):
     
@@ -71,8 +79,18 @@ class PressaoStrategy(Strategy):
         Strategy.__init__(self)
 
     def execute(self):
-        return {'pressao' : 5}
+        change_plan = ChangesPlan()
+        change_plan.add_action(Action('set_pressao', {'value': randint(20, 240)}))
+        return change_plan
 
+class PlannerListener(Listener):
+
+    def __init__(self):
+        Listener.__init__(self)
+
+    def listen(self, data):
+        for action in data._actions:
+            print('command {}, params {}'.format(action.command, action.params))
 
 class MonitorAnalyzerController(BaseController):
 
@@ -93,6 +111,8 @@ class MonitorAnalyzerController(BaseController):
         self.monitor.attach(self.analyzer)
 
         self.analyzer.add_listener(self.planner)
+
+        self.planner.add_listener(PlannerListener())
 
     def start(self):
         self._sensors = {
