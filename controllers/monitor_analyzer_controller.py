@@ -20,6 +20,10 @@ from analyzer.analyzer import Analyser
 from analyzer.symptom import Symptom
 from system.knowledge_singleton import KnowledgeSingleton
 from system.strategies.zqm_strategy import ZmqStrategy
+from plan.planner import Planner
+from plan.action import Action
+from plan.changes_plan import ChangesPlan
+from interfaces.listener import Listener
 
 class SocketStrategy(Strategy):
 
@@ -48,14 +52,45 @@ class LimitSymptom(Symptom):
         aux = self._manager._knowledge.read(self.property)
         return aux and int(aux[self.property]) > int(self.limit)
 
-class PlanListener(object):
+class AllStrategy(Strategy):
+
+    def __init__(self, data):
+        Strategy.__init__(self)
+
+    def execute(self):
+        change_plan = ChangesPlan()
+        change_plan.add_action(Action('set_temperatura', {'value': randint(20, 240)}))
+        change_plan.add_action(Action('set_pressao', {'value': randint(20, 240)}))
+        return change_plan
+
+class TemperaturaStrategy(Strategy):
     
+    def __init__(self, data):
+        Strategy.__init__(self)
+
+    def execute(self):
+        change_plan = ChangesPlan()
+        change_plan.add_action(Action('set_temperatura', {'value': randint(20, 240)}))
+        return change_plan
+
+class PressaoStrategy(Strategy):
+    
+    def __init__(self, data):
+        Strategy.__init__(self)
+
+    def execute(self):
+        change_plan = ChangesPlan()
+        change_plan.add_action(Action('set_pressao', {'value': randint(20, 240)}))
+        return change_plan
+
+class PlannerListener(Listener):
+
+    def __init__(self):
+        Listener.__init__(self)
+
     def listen(self, data):
-
-        for symptom in data.symptoms:
-            print(symptom._name)
-
-
+        for action in data._actions:
+            print('command {}, params {}'.format(action.command, action.params))
 
 class MonitorAnalyzerController(BaseController):
 
@@ -63,6 +98,7 @@ class MonitorAnalyzerController(BaseController):
         BaseController.__init__(self)
         self.monitor = Monitor()
         self.analyzer = Analyser()
+        self.planner = Planner()
         
         knowledge_accessor = KnowledgeSingleton()
         self.knowledge = knowledge_accessor.get_instance()
@@ -74,7 +110,9 @@ class MonitorAnalyzerController(BaseController):
 
         self.monitor.attach(self.analyzer)
 
-        self.analyzer.add_listener(PlanListener())
+        self.analyzer.add_listener(self.planner)
+
+        self.planner.add_listener(PlannerListener())
 
     def start(self):
         self._sensors = {
@@ -100,6 +138,10 @@ class MonitorAnalyzerController(BaseController):
 
         self.analyzer.add_symptom('pressao_symptom', LimitSymptom, {'limit': 55, 'property': 'pressao'})
         self.analyzer.add_symptom('temperatura_symptom', LimitSymptom, {'limit': 85, 'property': 'temperatura'})
+
+        self.planner.add_strategy(['pressao_symptom', 'temperatura_symptom'], AllStrategy) 
+        self.planner.add_strategy(['pressao_symptom'], PressaoStrategy) 
+        self.planner.add_strategy(['temperatura_symptom'], TemperaturaStrategy) 
 
         while True:
             pass
