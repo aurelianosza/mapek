@@ -5,3 +5,6 @@ https://github.com/robotframework/WebDemo
 https://www.toptal.com/robotics/programming-a-robot-an-introductory-tutorial
 
 https://www.theconstructsim.com/robotigniteacademy_learnros/ros-courses-library/python-robotics/
+
+
+Esta implementação não disponibiliza para o usuário um conjunto de interfaces que guia a implementação de um gerador de estratégias em reação às modificações no contexto de execução. Cabe ao usuário implementar sob seu projeto esse mecanismo. Ele deve usar os sintomas como entrada para definir que ações devem ser executadas quando uma determinada condição é satisfeita.

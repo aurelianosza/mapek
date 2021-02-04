@@ -24,6 +24,7 @@ from plan.planner import Planner
 from plan.action import Action
 from plan.changes_plan import ChangesPlan
 from interfaces.listener import Listener
+from executor.executor import Executor
 
 class SocketStrategy(Strategy):
 
@@ -83,14 +84,6 @@ class PressaoStrategy(Strategy):
         change_plan.add_action(Action('set_pressao', {'value': randint(20, 240)}))
         return change_plan
 
-class PlannerListener(Listener):
-
-    def __init__(self):
-        Listener.__init__(self)
-
-    def listen(self, data):
-        for action in data._actions:
-            print('command {}, params {}'.format(action.command, action.params))
 
 class MonitorAnalyzerController(BaseController):
 
@@ -112,7 +105,7 @@ class MonitorAnalyzerController(BaseController):
 
         self.analyzer.add_listener(self.planner)
 
-        self.planner.add_listener(PlannerListener())
+        self.planner.add_listener(Executor())
 
     def start(self):
         self._sensors = {

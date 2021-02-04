@@ -6,6 +6,6 @@ sys.path.append(folder.parent.parent)
 
 class Action(object):
 
-    def __init__(self, comand, params):
-        self.command = comand
+    def __init__(self, command, params):
+        self.command = command
         self.params = params
