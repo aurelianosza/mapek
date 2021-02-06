@@ -19,11 +19,3 @@ class KnowledgeReaderStrategy(Strategy):
             if data in aux:
                 return {data: aux[data]}
             return None
-
-if __name__ == '__main__':
-    
-    k = KnowledgeReaderStrategy()
-
-    print(k.execute('alias'))
-    
-

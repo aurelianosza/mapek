@@ -13,19 +13,4 @@ class KnowledgeDeletorStrategy(Strategy):
         Strategy.__init__(self)
 
     def execute(self, data):
-        aux = None
-        with open('data.json', 'r') as f:
-            aux = json.loads(f.read())
-        aux.pop(data, None)
-        with open('data.json', 'w') as f:
-            f.write(json.dumps(aux))
-
-
-
-if __name__ == '__main__':
-    
-    k = KnowledgeDeletorStrategy()
-
-    k.execute('name')
-    
-
+        pass

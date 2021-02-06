@@ -13,7 +13,3 @@ manager = BaseManager()
 manager.start()
 
 s = SystemLogSingleton().get_instance()
-
-# m = manager.MysqlStrategy()
-
-# s.add_recorder('database', m)

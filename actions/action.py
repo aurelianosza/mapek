@@ -6,7 +6,7 @@ sys.path.append(folder.parent.parent)
 
 from interfaces.action import Action
 
-class SimpleAction(Action):
+class ExampleUserAction(Action):
 
     def __init__(self, command, params):
-        Action.__init__(self, command, params)
+        pass

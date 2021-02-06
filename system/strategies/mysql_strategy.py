@@ -27,11 +27,3 @@ class MysqlStrategy(Strategy):
         sql_raw = 'INSERT INTO logs VALUES (%s, %s)'
         cursor.execute(sql_raw, (None, message))
         self._connection.commit()
-        
-if __name__ == '__main__':
-    
-    r = MysqlStrategy()
-
-    r.execute('aqui')
-
-    

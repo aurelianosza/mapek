@@ -6,7 +6,7 @@ sys.path.append(folder.parent.parent)
 
 from abc import ABC, abstractmethod
 
-class Symptom(ABC):
+class ExampleSymptom(ABC):
 
     def __init__(self, name, manager):
         
