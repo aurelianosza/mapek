@@ -21,6 +21,3 @@ class KnowledgeUpdaterStrategy(Strategy):
                 aux[key] = val
         with open('data.json', 'w') as f:
             f.write(json.dumps(aux))
-
-    
-
